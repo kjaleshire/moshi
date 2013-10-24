@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'suggest/cli'
+cli = Suggest::CLI.new
+cli.run
