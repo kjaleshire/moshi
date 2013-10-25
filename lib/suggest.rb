@@ -1,1 +1,1 @@
-require 'mosh/cli'
+require 'moshi/cli'

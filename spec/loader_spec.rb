@@ -1,12 +1,12 @@
-require 'mosh/loader'
-require 'mosh/trie'
+require 'moshi/loader'
+require 'moshi/trie'
 
-describe 'Mosh.load_words' do
-	let(:list) { Mosh::Trie.new }
+describe 'Moshi.load_words' do
+	let(:list) { Moshi::Trie.new }
 
 	it "should load a list of words into a new trie" do
 		path = File.expand_path('../testlist', __FILE__)
-		Mosh.load_words(path, list)
+		Moshi.load_words(path, list)
 
 		expect(list.search('pretty')).to eq('pretty')
 		expect(list.search('glum')).to eq('glum')

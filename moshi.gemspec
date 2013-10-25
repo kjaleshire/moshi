@@ -4,8 +4,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mosh/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "mosh"
-  spec.version       = Mosh::VERSION
+  spec.name          = "moshi"
+  spec.version       = Moshi::VERSION
   spec.authors       = ["Kyle J Aleshire\n"]
   spec.email         = ["kjaleshire@gmail.com"]
   spec.summary       = "A mispelled word correcter"

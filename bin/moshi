@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'moshi/cli'
+cli = Moshi::CLI.new ARGV
+cli.run

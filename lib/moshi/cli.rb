@@ -1,11 +1,11 @@
-require 'mosh/trie'
-require 'mosh/version'
-require 'mosh/engine'
-require 'mosh/loader'
+require 'moshi/trie'
+require 'moshi/version'
+require 'moshi/engine'
+require 'moshi/loader'
 
 require 'optparse'
 
-module Mosh
+module Moshi
 	class CLI
 		PROMPT = '> '
 		DEFAULT_DICT = '/usr/share/dict/words'
@@ -49,7 +49,7 @@ module Mosh
 
 			def build_parser
 				@opt_parser = OptionParser.new do |o|
-					o.banner = "Usage: mosh [-h|-v] [dictionary_path]"
+					o.banner = "Usage: moshi [-h|-v] [dictionary_path]"
 					o.separator ""
 					o.separator "Options:"
 					o.separator "dictionary_path\tpath to dictionary file"
@@ -70,7 +70,7 @@ module Mosh
 				puts "Loading dictionary at #{filename}..."
 				begin_time = Time.now
 
-				Mosh.load_words(filename, dictionary)
+				Moshi.load_words(filename, dictionary)
 
 				puts "Loaded dictionary in #{Time.now - begin_time} seconds"
 			end

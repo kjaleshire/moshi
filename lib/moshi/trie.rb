@@ -1,4 +1,4 @@
-module Mosh
+module Moshi
 	class Trie
 		attr_accessor :trie
 

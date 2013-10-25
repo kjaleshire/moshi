@@ -1,4 +1,4 @@
-module Mosh
+module Moshi
 	class Engine
 		VOWELS = %w(a e i o u)
 		VOWEL_RGX = /[aeiou]/i

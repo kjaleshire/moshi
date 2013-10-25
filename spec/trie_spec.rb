@@ -1,7 +1,7 @@
-require 'mosh/trie'
+require 'moshi/trie'
 
-describe Mosh::Trie do
-	let(:trie)	{ Mosh::Trie.new('supercalafragilistic') }
+describe Moshi::Trie do
+	let(:trie)	{ Moshi::Trie.new('supercalafragilistic') }
 
 	describe '#initialize' do
 		it "should create a new Trie with a new word stored" do

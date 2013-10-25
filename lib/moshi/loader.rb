@@ -1,5 +1,5 @@
-module Mosh
-	def Mosh.load_words(filename, dictionary)
+module Moshi
+	def Moshi.load_words(filename, dictionary)
 		begin
 			file = File.open(filename)
 			file.each_line do |line|
