@@ -1,5 +1,3 @@
-require 'moshi/loader'
-
 module Moshi
 	class Engine
 		VOWEL = /[aeiou]/
@@ -13,21 +11,41 @@ module Moshi
 		end
 
 		def suggest(word)
-			if @dictionary[word]
-				'NO SUGGESTIONS'
-			else
-				@dictionary[Moshi.mangle(word)]
-			end
+			key = Moshi.mangle
+			@dictionary[Moshi.mangle(word)]
+
+			'NO SUGGESTION'
 		end
 
 	private
 
-		def sift(possibles)
-			possibles.each_index do |i|
-				possibles[i] = @dictionary[possibles[i]]
-			end
+		def mangle(word)
+			# lowercase it!
+			word.downcase!
 
-			possibles.compact
+			# destroy copycats!
+			word.gsub!(/([a-z])\1+/) { |s| s[0] }
+
+			# destroy all vowels!
+			word.gsub!(/[aeiou]/, '*')
+		end
+
+		def load_file(filename)
+			list = {}
+			begin
+				file = File.open(filename)
+				file.each_line do |line|
+					key = Moshi.mangle(line.chomp!.dup)
+					list[key] ||= []
+					list[key] << line
+				end
+			rescue Exception => e
+				puts e
+				exit 1
+			ensure
+				file.close unless file.nil?
+			end
+			list
 		end
 
 	end

@@ -1,6 +1,5 @@
 require 'moshi/version'
 require 'moshi/engine'
-require 'moshi/loader'
 
 require 'optparse'
 
