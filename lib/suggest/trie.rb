@@ -15,13 +15,8 @@ module Suggest
 
 		def search(search_word)
 			if !search_word.empty?
-				subhash = search_hash(search_word.split(//), @trie)
-				subhash[:word] if subhash
+				search_helper(search_word.split(//), @trie)
 			end
-		end
-
-		def subwords(search_word)
-			subhash = search_hash(search_word.split(//), @trie)
 		end
 
 		private
@@ -36,13 +31,13 @@ module Suggest
 				end
 			end
 
-			def search_hash(search_word, list)
+			def search_helper(search_word, list)
 				if list
 					if !search_word.empty?
 						letter = search_word.shift
-						search_hash(search_word, list[letter])
+						search_helper(search_word, list[letter])
 					else
-						list
+						list[:word]
 					end
 				end
 			end
