@@ -1,9 +1,9 @@
 module Suggest
-	def Suggest.load_words(filename, trie)
+	def Suggest.load_words(filename, dictionary)
 		begin
 			file = File.open(filename)
 			file.each_line do |line|
-				trie.store(line.chomp)
+				dictionary.store(line.chomp)
 			end
 		rescue Exception => e
 			puts e

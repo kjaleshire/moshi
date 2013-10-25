@@ -3,12 +3,14 @@ module Suggest
 		VOWELS = %w(a e i o u)
 		VOWEL_RGX = /[aeiou]/i
 
+		attr_accessor :dictionary
+
 		def initialize trie
-			@word_list = trie
+			@dictionary = trie
 		end
 
 		def suggest(word)
-			if @word_list.search(word)
+			if @dictionary.search(word)
 				'No suggestions'
 			else
 				'No match, would search'
@@ -20,8 +22,5 @@ module Suggest
 
 
 		end
-
 	end
 end
-
-#@word_list.search(word)
