@@ -1,3 +1,5 @@
+require 'moshi/loader'
+
 module Moshi
 	class Engine
 		VOWEL = /[aeiou]/
@@ -6,16 +8,15 @@ module Moshi
 		attr_accessor :dictionary
 
 		def initialize filename
-			@dictionary = Moshi.load_words(filename)
+			@dictionary = Moshi.load_file(filename)
+			puts "Loaded dictionary from #{filename}"
 		end
 
 		def suggest(word)
-			if @dictionary.search(word)
+			if @dictionary[word]
 				'NO SUGGESTIONS'
 			else
-				# TODO
-				possibles = ["Suggestions possible"]
-				suggestions = sift(possibles)
+				@dictionary[Moshi.mangle(word)]
 			end
 		end
 
@@ -23,7 +24,7 @@ module Moshi
 
 		def sift(possibles)
 			possibles.each_index do |i|
-				possibles[i] = @dictionary.search(possibles[i])
+				possibles[i] = @dictionary[possibles[i]]
 			end
 
 			possibles.compact

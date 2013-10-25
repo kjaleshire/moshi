@@ -15,7 +15,7 @@ module Moshi
 			build_parser
 			parse argv
 
-			@engine = Engine.new(@options[filename])
+			@engine = Engine.new(@options[:filename])
 		end
 
 		def run
@@ -47,7 +47,7 @@ module Moshi
 					o.banner = "Usage: moshi [-h|-v] [dictionary_path]"
 					o.separator ""
 					o.separator "Options:"
-					o.separator "dictionary_path", "path to dictionary file"
+					o.on_tail "dictionary_path", "path to dictionary file"
 
 					o.on_tail "-h", "--help", "Show help" do
 	        	puts @opt_parser

@@ -1,3 +1,3 @@
 module Moshi
-  VERSION = "0.4.4"
+  VERSION = "0.5.1"
 end
