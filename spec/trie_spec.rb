@@ -13,6 +13,10 @@ describe Suggest::Trie do
 		it "should store a new word and return it" do
 			expect(trie.store('supermacintatertosh')).to eq('supermacintatertosh')
 		end
+
+		it "should not store an empty word" do
+			expect(trie.store('')).to be_nil
+		end
 	end
 
 	describe '#search' do
@@ -24,9 +28,20 @@ describe Suggest::Trie do
 		end
 
 		it "should not return a sub-word of any words already stored" do
+			# common to either
 			expect(trie.search('supercala')).to be_nil
 			expect(trie.search('supermac')).to be_nil
+
+			# common to both
 			expect(trie.search('super')).to be_nil
+		end
+
+		it "should not return a word that contains another stored word" do
+			expect(trie.search('supercalafragilisticexpealidocious')).to_not eq('supercalafragilistic')
+		end
+
+		it "should not retrieve an empty word" do
+			expect(trie.search('')).to be_nil
 		end
 	end
 end

@@ -8,12 +8,16 @@ module Suggest
 		end
 
 		def store(store_word)
-			store_helper(store_word, store_word.split(//), @trie)
+			if !store_word.empty?
+				store_helper(store_word, store_word.split(//), @trie)
+			end
 		end
 
 		def search(search_word)
-			subhash = search_hash(search_word.split(//), @trie)
-			subhash[:word]
+			if !search_word.empty?
+				subhash = search_hash(search_word.split(//), @trie)
+				subhash[:word] if subhash
+			end
 		end
 
 		def subwords(search_word)
@@ -28,7 +32,7 @@ module Suggest
 					list[letter] ||= {}
 					store_helper(fullword, word, list[letter])
 				else
-					list[:word] = fullword unless fullword.empty?
+					list[:word] = fullword
 				end
 			end
 
@@ -36,7 +40,7 @@ module Suggest
 				if list
 					if !search_word.empty?
 						letter = search_word.shift
-						search_helper(search_word, list[letter])
+						search_hash(search_word, list[letter])
 					else
 						list
 					end

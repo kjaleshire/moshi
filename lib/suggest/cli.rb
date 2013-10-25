@@ -1,36 +1,50 @@
 require 'suggest/trie'
+require 'suggest/version'
+require 'suggest/engine'
 
 module Suggest
 	class CLI
-		def initialize
-			@word_store = Suggest::Trie.new
-			run
+		PROMPT = '> '
+
+		def initialize args=[]
+			@args = args
+			Signal.trap("INT") { puts "\nExiting!"; exit 0 }
+			@word_list = Trie.new
+			@engine = Engine.new @word_list
+			@word_array = []
+			load_words
 		end
 
 		def run
 			loop do
-				puts "> "
-				word = gets.chomp
-				puts suggest(word)
+				print PROMPT
+				word = STDIN.gets.chomp
+				puts @engine.suggest(word)
 			end
 		end
 
 		private
 
-			def suggest(word)
-				p word
-			end
+			def load_words
+				filename = @args[0] || '/usr/share/dict/words'
+				puts "Loading dictionary at #{filename}..."
+				begin_time = Time.now
 
-			def vowel_distance(word)
+				begin
+					file = File.open(filename)
+					file.each_line do |line|
+						#@word_list.store(line.chomp)
+						@word_array << line.chomp
+					end
+				rescue Exception => e
+					puts e
+					exit 1
+				ensure
+					file.close unless file.nil?
+				end
 
-			end
-
-			def case_distance(word)
-
-			end
-
-			def repeat_distance(word)
-
+				end_time = Time.now
+				puts "Loaded dictionary in #{end_time - begin_time} seconds"
 			end
 
 		#end private

@@ -1,4 +1,5 @@
-require 'suggest/version'
+require 'suggest/cli'
+
 
 module Suggest
 

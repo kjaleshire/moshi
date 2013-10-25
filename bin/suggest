@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
 require 'suggest/cli'
-cli = Suggest::CLI.new
+cli = Suggest::CLI.new ARGV
 cli.run
