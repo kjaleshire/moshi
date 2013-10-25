@@ -1,4 +1,3 @@
-require 'moshi/trie'
 require 'moshi/version'
 require 'moshi/engine'
 require 'moshi/loader'
@@ -11,16 +10,12 @@ module Moshi
 		DEFAULT_DICT = '/usr/share/dict/words'
 
 		def initialize argv
-
 			Signal.trap("INT") { puts "\nExiting!"; exit 0 }
 
 			build_parser
 			parse argv
 
-			dictionary = Trie.new
-			load_dictionary(@options[:filename], dictionary)
-
-			@engine = Engine.new(dictionary)
+			@engine = Engine.new(@options[filename])
 		end
 
 		def run
@@ -38,21 +33,21 @@ module Moshi
 
 		def parse argv
 			@options = {}
-			@opt_parser.parse!(argv)
+			@opt_parser.parse! argv
 
 			@options[:filename] = !argv.empty? ? argv.first : DEFAULT_DICT
 
     	@options
 		end
 
-		private
+	private
 
 			def build_parser
 				@opt_parser = OptionParser.new do |o|
 					o.banner = "Usage: moshi [-h|-v] [dictionary_path]"
 					o.separator ""
 					o.separator "Options:"
-					o.separator "dictionary_path\tpath to dictionary file"
+					o.separator "dictionary_path", "path to dictionary file"
 
 					o.on_tail "-h", "--help", "Show help" do
 	        	puts @opt_parser
@@ -66,15 +61,5 @@ module Moshi
 				end
 			end
 
-			def load_dictionary filename, dictionary
-				puts "Loading dictionary at #{filename}..."
-				begin_time = Time.now
-
-				Moshi.load_words(filename, dictionary)
-
-				puts "Loaded dictionary in #{Time.now - begin_time} seconds"
-			end
-
-		#end private
 	end
 end

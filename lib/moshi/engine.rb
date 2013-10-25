@@ -5,39 +5,21 @@ module Moshi
 
 		attr_accessor :dictionary
 
-		# Empty Trie indicates we're only using the engine for generation
-		def initialize dict=Trie.new
-			@dictionary = dict
+		def initialize filename
+			@dictionary = Moshi.load_words(filename)
 		end
 
 		def suggest(word)
 			if @dictionary.search(word)
 				'NO SUGGESTIONS'
 			else
-				generate_variations()
+				# TODO
+				possibles = ["Suggestions possible"]
 				suggestions = sift(possibles)
 			end
 		end
 
-		def generate_variations(word)
-			possibles = generate_vowels(word.dup, 0, [])
-		end
-
-		def generate_vowels(w, i, possibles)
-			index = word.index(VOWEL, i+1)
-			return if !index
-			a = []
-			VOWEL_LIST.each do |v|
-
-				word[index] = v
-				a.add(word)
-			end
-			p a
-			a.each do |variation|
-				generate_vowels(variation.dup, index, a)
-			end
-			possibles << a.uniq
-		end
+	private
 
 		def sift(possibles)
 			possibles.each_index do |i|
@@ -46,5 +28,6 @@ module Moshi
 
 			possibles.compact
 		end
+
 	end
 end

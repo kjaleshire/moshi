@@ -1,9 +1,10 @@
 module Moshi
-	def Moshi.load_words(filename, dictionary)
+	def Moshi.load_file(filename)
+		list = {}
 		begin
 			file = File.open(filename)
 			file.each_line do |line|
-				dictionary.store(line.chomp)
+				list[line.chomp] = line.chomp
 			end
 		rescue Exception => e
 			puts e
@@ -11,5 +12,6 @@ module Moshi
 		ensure
 			file.close unless file.nil?
 		end
+		list
 	end
 end
