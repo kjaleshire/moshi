@@ -5,8 +5,8 @@ require 'optparse'
 
 module Moshi
 	class CLI
-		PROMPT = '> '
 		DEFAULT_DICT = '/usr/share/dict/words'
+		PROMPT = '> '
 
 		def initialize argv
 			Signal.trap("INT") { puts "\nExiting!"; exit 0 }

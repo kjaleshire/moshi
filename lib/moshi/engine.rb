@@ -6,36 +6,34 @@ module Moshi
 		attr_accessor :dictionary
 
 		def initialize filename
-			@dictionary = Moshi.load_file(filename)
+			@dictionary = load_file(filename)
 			puts "Loaded dictionary from #{filename}"
 		end
 
 		def suggest(word)
-			key = Moshi.mangle
-			@dictionary[Moshi.mangle(word)]
-
-			'NO SUGGESTION'
+			@dictionary[::Engine.mangle(word)] || 'NO SUGGESTION'
 		end
 
-	private
-
-		def mangle(word)
+		def self.mangle(word)
 			# lowercase it!
 			word.downcase!
 
-			# destroy copycats!
+			# destroy copycat letters!
 			word.gsub!(/([a-z])\1+/) { |s| s[0] }
 
 			# destroy all vowels!
-			word.gsub!(/[aeiou]/, '*')
+			word.gsub!(/[aeiou]+/, '*')
+
+			word
 		end
 
-		def load_file(filename)
-			list = {}
+#	private
+
+		def load_file(filename, list = {})
 			begin
 				file = File.open(filename)
 				file.each_line do |line|
-					key = Moshi.mangle(line.chomp!.dup)
+					key = ::Engine.mangle(line.chomp!.dup)
 					list[key] ||= []
 					list[key] << line
 				end
