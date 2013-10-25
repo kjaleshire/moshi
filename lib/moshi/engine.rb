@@ -11,10 +11,10 @@ module Moshi
 		end
 
 		def suggest(word)
-			@dictionary[::Engine.mangle(word)] || 'NO SUGGESTION'
+			@dictionary[mangle(word)] || 'NO SUGGESTION'
 		end
 
-		def self.mangle(word)
+		def mangle(word)
 			# lowercase it!
 			word.downcase!
 
@@ -33,7 +33,7 @@ module Moshi
 			begin
 				file = File.open(filename)
 				file.each_line do |line|
-					key = ::Engine.mangle(line.chomp!.dup)
+					key = mangle(line.chomp!.dup)
 					list[key] ||= []
 					list[key] << line
 				end

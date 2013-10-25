@@ -14,7 +14,7 @@ module Moshi
 			build_parser
 			parse argv
 
-			@engine = Engine.new(@options[:filename])
+			@engine = Moshi::Engine.new(@options[:filename])
 		end
 
 		def run
