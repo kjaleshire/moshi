@@ -9,35 +9,37 @@ module Moshi
 
 		def store(store_word)
 			if !store_word.empty?
-				store_helper(store_word, store_word.split(//), @trie)
+				@trie[store_word.to_sym] = store_word
+				#store_helper(store_word, store_word.downcase.split(//), @trie)
 			end
 		end
 
 		def search(search_word)
 			if !search_word.empty?
-				search_helper(search_word.split(//), @trie)
+				@trie[search_word.to_sym]
+				#search_helper(search_word, search_word.downcase.split(//), @trie)
 			end
 		end
 
 		private
 
-			def store_helper(fullword, word, list)
+			def store_helper(full_word, word, list)
 				if !word.empty?
 					letter = word.shift
 					list[letter] ||= {}
-					store_helper(fullword, word, list[letter])
+					store_helper(full_word, word, list[letter])
 				else
-					list[:word] = fullword
+					list[full_word] = full_word
 				end
 			end
 
-			def search_helper(search_word, list)
+			def search_helper(search_word, word, list)
 				if list
-					if !search_word.empty?
-						letter = search_word.shift
-						search_helper(search_word, list[letter])
+					if !word.empty?
+						letter = word.shift
+						search_helper(search_word, word,list[letter])
 					else
-						list[:word]
+						list[search_word]
 					end
 				end
 			end
