@@ -1,22 +1,21 @@
-require 'suggest/trie'
-require 'suggest/version'
-require 'suggest/engine'
-require 'suggest/loader'
+require 'mosh/trie'
+require 'mosh/version'
+require 'mosh/engine'
+require 'mosh/loader'
 
 require 'optparse'
 
-module Suggest
+module Mosh
 	class CLI
 		PROMPT = '> '
 		DEFAULT_DICT = '/usr/share/dict/words'
 
 		def initialize argv
-			@argv = argv
 
 			Signal.trap("INT") { puts "\nExiting!"; exit 0 }
 
 			build_parser
-			parse
+			parse argv
 
 			dictionary = Trie.new
 			load_dictionary(@options[:filename], dictionary)
@@ -31,16 +30,17 @@ module Suggest
 				if word
 					puts @engine.suggest(word.chomp)
 				else
-					puts "\nExiting!"; exit 0
+					puts "\nExiting!"
+					exit 0
 				end
 			end
 		end
 
-		def parse
+		def parse argv
 			@options = {}
-			@opt_parser.parse!(@argv)
+			@opt_parser.parse!(argv)
 
-			@options[:filename] = !@argv.empty? ? @argv.first : DEFAULT_DICT
+			@options[:filename] = !argv.empty? ? argv.first : DEFAULT_DICT
 
     	@options
 		end
@@ -49,7 +49,7 @@ module Suggest
 
 			def build_parser
 				@opt_parser = OptionParser.new do |o|
-					o.banner = "Usage: suggest [-h|-v] [dictionary_path]"
+					o.banner = "Usage: mosh [-h|-v] [dictionary_path]"
 					o.separator ""
 					o.separator "Options:"
 					o.separator "dictionary_path\tpath to dictionary file"
@@ -70,11 +70,10 @@ module Suggest
 				puts "Loading dictionary at #{filename}..."
 				begin_time = Time.now
 
-				Suggest.load_words(filename, dictionary)
+				Mosh.load_words(filename, dictionary)
 
 				puts "Loaded dictionary in #{Time.now - begin_time} seconds"
 			end
-
 
 		#end private
 	end

@@ -1,4 +1,4 @@
-module Suggest
+module Mosh
 	class Trie
 		attr_accessor :trie
 

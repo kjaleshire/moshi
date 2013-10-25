@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'suggest/version'
+require 'mosh/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "suggest"
-  spec.version       = Suggest::VERSION
+  spec.name          = "mosh"
+  spec.version       = Mosh::VERSION
   spec.authors       = ["Kyle J Aleshire\n"]
   spec.email         = ["kjaleshire@gmail.com"]
   spec.summary       = "A mispelled word correcter"

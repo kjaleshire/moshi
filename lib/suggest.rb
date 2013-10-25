@@ -1,1 +1,1 @@
-require 'suggest/cli'
+require 'mosh/cli'

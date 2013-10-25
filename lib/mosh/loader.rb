@@ -1,5 +1,5 @@
-module Suggest
-	def Suggest.load_words(filename, dictionary)
+module Mosh
+	def Mosh.load_words(filename, dictionary)
 		begin
 			file = File.open(filename)
 			file.each_line do |line|

@@ -1,6 +1,6 @@
-require 'suggest/engine'
+require 'mosh/engine'
 
-describe Suggest::Engine do
+describe Mosh::Engine do
 	describe '#suggest' do
 		it "should suggest fuzzy words" do
 
