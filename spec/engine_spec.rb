@@ -2,7 +2,7 @@ require 'moshi/engine'
 require 'moshi/cli'
 
 describe Moshi::Engine do
-	let(:engine) { Moshi::Engine.new() }
+	let(:engine) { Moshi::Engine.new(File.expand_path('../testlist', __FILE__)) }
 
 	describe '#suggest' do
 
