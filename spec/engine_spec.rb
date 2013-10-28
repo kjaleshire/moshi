@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'moshi/engine'
 require 'moshi/cli'
 
@@ -9,11 +10,6 @@ describe Moshi::Engine do
 	end
 
 	describe '.mangle' do
-		describe "mangling the empty word" do
-			it "should return nil" do
-				expect(engine.mangle('')).to be_nil
-			end
-		end
 
 		describe "mangling a word" do
 			it "should return the mangled word" do
@@ -34,20 +30,17 @@ describe Moshi::Engine do
 	end
 
 	describe '#load_file' do
-		it "should load a list of words into a new trie" do
-			path = File.expand_path('../testlist', __FILE__)
-			list = engine.load_file(path)
-
-			expect(list['pretty']).to eq('pretty')
-			expect(list['glum']).to eq('glum')
-			expect(list['beanstalk']).to eq('beanstalk')
-			expect(list['lollipop']).to eq('lollipop')
-			expect(list['slammed']).to eq('slammed')
-			expect(list['cacaphony']).to be_nil
-			expect(list['glasgow']).to be_nil
-			expect(list['mariachi']).to be_nil
-			expect(list['quagmire']).to be_nil
-			expect(list['zimbabwe']).to be_nil
+		it "should load a list of words into a new hash" do
+			expect(engine.dictionary[engine.mangle('pretty')]).to include('pretty')
+			expect(engine.dictionary[engine.mangle('glum')]).to include('glum')
+			expect(engine.dictionary[engine.mangle('beanstalk')]).to include('beanstalk')
+			expect(engine.dictionary[engine.mangle('lollipop')]).to include('lollipop')
+			expect(engine.dictionary[engine.mangle('slammed')]).to include('slammed')
+			expect(engine.dictionary[engine.mangle('cacaphony')]).to be_nil
+			expect(engine.dictionary[engine.mangle('glasgow')]).to be_nil
+			expect(engine.dictionary[engine.mangle('mariachi')]).to be_nil
+			expect(engine.dictionary[engine.mangle('quagmire')]).to be_nil
+			expect(engine.dictionary[engine.mangle('zimbabwe')]).to be_nil
 		end
 	end
 end

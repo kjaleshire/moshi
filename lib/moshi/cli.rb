@@ -8,57 +8,72 @@ module Moshi
 		DEFAULT_DICT = '/usr/share/dict/words'
 		PROMPT = '> '
 
-		def initialize argv
+		def initialize argv=[]
 			Signal.trap("INT") { puts "\nExiting!"; exit 0 }
 
-			build_parser
-			parse argv
+			@opt_parser = build_parser
+			@opt_parser.parse! argv
 
 			@engine = Moshi::Engine.new(@options[:filename])
 		end
 
 		def run
-			loop do
-				print PROMPT
-				word = STDIN.gets
-				if word
-					puts @engine.suggest(word.chomp)
-				else
-					puts "\nExiting!"
-					exit 0
+			if @options[:generate]
+				mutants = @engine.generate @options[:generate], @options[:original]
+
+				puts mutants
+			else
+
+				loop do
+					print PROMPT
+					word = STDIN.gets
+					if word
+						puts word if @options[:original]
+						puts @engine.suggest(word.chomp)
+					else
+						puts "\nExiting!"
+						exit 0
+					end
 				end
+
 			end
-		end
-
-		def parse argv
-			@options = {}
-			@opt_parser.parse! argv
-
-			@options[:filename] = !argv.empty? ? argv.first : DEFAULT_DICT
-
-    	@options
 		end
 
 	private
 
-			def build_parser
-				@opt_parser = OptionParser.new do |o|
-					o.banner = "Usage: moshi [-h|-v] [dictionary_path]"
-					o.separator ""
-					o.separator "Options:"
-					o.on_tail "dictionary_path", "path to dictionary file"
+		def build_parser
+			@options = {
+				filename: DEFAULT_DICT
+			}
 
-					o.on_tail "-h", "--help", "Show help" do
-	        	puts @opt_parser
-	        	exit 1
-	      	end
+			OptionParser.new do |o|
+				o.banner = "Usage: moshi [options]"
+				o.separator ""
+				o.separator "Options:"
 
-	      	o.on_tail("-v", "--version", "Show version") do
-		        puts File.read('VERSION')
-		        exit
-		      end
+				o.on "-d DICTIONARY", "--dictionary DICTIONARY", "Path to dictionary file" do |d|
+					@options[:filename] = d
 				end
+
+				o.on "-g N", "--generate N", Integer, "Generate N mispellings" do |n|
+					@options[:generate] = n
+				end
+
+				o.on "-o", "--original", "Print the original word before suggestion or generation" do |n|
+					@options[:original] = true
+				end
+
+				o.on_tail "-h", "--help", "Show help" do
+        	puts @opt_parser
+        	exit 1
+      	end
+
+      	o.on_tail "-v", "--version", "Show version" do
+	        puts File.read('VERSION')
+	        exit
+	      end
 			end
+		end
 
 	end
 end

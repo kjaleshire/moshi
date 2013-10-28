@@ -1,6 +1,6 @@
 Moshi - for catching all (well, most...) of your misspelled words.
 
-
+Does fuzzy correction based on incorrect vowels, duplicate letters and incorrect capitalization.
 
 Usage:
 $ moshi [dictionary_path]
