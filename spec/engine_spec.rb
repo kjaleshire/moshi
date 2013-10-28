@@ -6,7 +6,10 @@ describe Moshi::Engine do
 	let(:engine) { Moshi::Engine.new(File.expand_path('../testlist', __FILE__)) }
 
 	describe '#suggest' do
-
+		it "should not return words longer than the original" do
+			expect(engine.suggest("Phoronic", nil)).to eq('phoronic')
+			expect(engine.suggest("Phoronic", nil)).to_not eq('Pharaonic')
+		end
 	end
 
 	describe '.mangle' do
@@ -41,6 +44,15 @@ describe Moshi::Engine do
 			expect(engine.dictionary[engine.mangle('mariachi')]).to be_nil
 			expect(engine.dictionary[engine.mangle('quagmire')]).to be_nil
 			expect(engine.dictionary[engine.mangle('zimbabwe')]).to be_nil
+		end
+	end
+
+	describe '#mutate' do
+		it "should generate a word that can be mangled to the same as the original" do
+			mutant = engine.mutate('supercalafragilistic')
+			expect(engine.mangle(mutant)).to eq(engine.mangle('supercalafragilistic'))
+			mutant_2 = engine.mutate('expealidocious')
+			expect(engine.mangle(mutant_2)).to eq(engine.mangle('expealidocious'))
 		end
 	end
 end

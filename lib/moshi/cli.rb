@@ -9,7 +9,8 @@ module Moshi
 		PROMPT = '> '
 
 		def initialize argv=[]
-			Signal.trap("INT") { puts "\nExiting!"; exit 0 }
+			# CTRL-C
+			Signal.trap("INT") { exit 0 }
 
 			@opt_parser = build_parser
 			@opt_parser.parse! argv
@@ -29,9 +30,9 @@ module Moshi
 					word = STDIN.gets
 					if word
 						puts word if @options[:original]
-						puts @engine.suggest(word.chomp)
+						puts @engine.suggest(word.chomp, @options[:all])
 					else
-						puts "\nExiting!"
+						# EOF
 						exit 0
 					end
 				end
@@ -42,9 +43,7 @@ module Moshi
 	private
 
 		def build_parser
-			@options = {
-				filename: DEFAULT_DICT
-			}
+			@options = { filename: DEFAULT_DICT }
 
 			OptionParser.new do |o|
 				o.banner = "Usage: moshi [options]"
@@ -59,6 +58,10 @@ module Moshi
 					@options[:generate] = n
 				end
 
+				o.on "-a", "--all", "Print all suggestions, not just the best" do
+					@options[:all] = true
+				end
+
 				o.on "-o", "--original", "Print the original word before suggestion or generation" do |n|
 					@options[:original] = true
 				end
@@ -69,7 +72,7 @@ module Moshi
       	end
 
       	o.on_tail "-v", "--version", "Show version" do
-	        puts File.read('VERSION')
+	        puts Moshi::VERSION
 	        exit
 	      end
 			end

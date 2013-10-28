@@ -8,17 +8,23 @@ module Moshi
 			@dictionary = load_file(filename)
 		end
 
-		def suggest(word)
+		def suggest(word, all)
 			a = @dictionary[mangle(word)]
-			if a.nil? || a.include?(word)
+			if a.nil?
 				'NO SUGGESTION'
-			else
+			elsif a.include?(word)
+				'CORRECT'
+			elsif all
 				a
+			else
+				a = a.dup
+				# we cannot have suggestions longer than the original
+				a.each { |w| a.delete(w) if w.length > word.length }
+				a.min { |a, b| (a.downcase.split(//) - b.downcase.split(//)).length }
 			end
 		end
 
 		def mangle(word)
-			# downcase! destroy copycats! destroy vowels!
 			word.downcase
 					.gsub(/([a-z])\1+/) { |s| s[0] }
 					.gsub(/[aeiou]+/, '*')
@@ -51,7 +57,7 @@ module Moshi
 			word
 		end
 
-	#private
+	private
 
 		def load_file(filename, list = {})
 			File.open(filename, 'r') do |file|
@@ -84,9 +90,9 @@ module Moshi
 			letter = word[r]
 			case letter
 				when /[a-z]/
-					word[r] = letter.upcase!
+					word[r] = letter.upcase
 				when /[A-Z]/
-					word[r] = letter.downcase!
+					word[r] = letter.downcase
 			end
 			word
 		end

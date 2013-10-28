@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Moshi::VERSION
   spec.authors       = ["Kyle J Aleshire\n"]
   spec.email         = ["kjaleshire@gmail.com"]
-  spec.summary       = "A mispelled word correcter"
-  spec.description   = "A mispelled word correcter"
+  spec.summary       = "A mispelled word correcter and generator"
+  spec.description   = "A mispelled word correcter and generator"
   spec.homepage      = "http://github.com/kjaleshire"
   spec.license       = "MIT"
 
