@@ -1,22 +1,20 @@
 require 'spec_helper'
 require 'moshi/engine'
-require 'moshi/cli'
 
 describe Moshi::Engine do
 
-	before do
-		@engine = Moshi::Engine.new(File.expand_path('../fixtures/testlist', __FILE__))
-	end
+	let(:engine) { Moshi::Engine.new(File.expand_path('../fixtures/testlist', __FILE__)) }
+	let(:klass) { engine.class }
 
-	it { @engine.should respond_to(:suggest)}
-	it { @engine.should respond_to(:generate)}
-	it { @engine.should respond_to(:dictionary)}
+	it { engine.should respond_to(:suggest)}
+	it { engine.should respond_to(:generate)}
+	it { engine.should respond_to(:dictionary)}
 
-	it { Moshi::Engine.should respond_to(:mangle)}
-	it { Moshi::Engine.should respond_to(:mutate)}
+	it { klass.should respond_to(:mangle)}
+	it { klass.should respond_to(:mutate)}
 
 	describe '#suggest' do
-		subject { @engine.suggest('Phoronic') }
+		subject { engine.suggest('Phoronic') }
 
 		context "should not return words longer than the original" do
 			it { should_not eq('Pharaonic') }
@@ -27,8 +25,16 @@ describe Moshi::Engine do
 		end
 	end
 
+	describe '#generate' do
+		subject { engine.generate(10) }
+
+		its(:length) { should eq(10) }
+
+	end
+
 	describe '.mangle' do
-		subject { Moshi::Engine.mangle(word) }
+
+		subject { klass.mangle(word) }
 
 		context "should return the properly mangled word" do
 			context do
@@ -48,43 +54,29 @@ describe Moshi::Engine do
 
 		end
 
-		describe "comparing mangled words from the spec" do
-			subject { Moshi::Engine.mangle(word) }
-
-			context "should reduce to the same key" do
-				context do
-					let(:word) { 'CUNsperrICY' }
-					it { should eq(Moshi::Engine.mangle('conspiracy')) }
-				end
-				context do
-					let(:word) { 'inSIDE' }
-					it { should eq(Moshi::Engine.mangle('inside')) }
-				end
-				context do
-					let(:word) { 'jjoobbb' }
-					it { should eq(Moshi::Engine.mangle('job')) }
-				end
-				context do
-					let(:word) { 'weke' }
-					it { should eq(Moshi::Engine.mangle('wake')) }
-				end
-
+		context "comparing mangled words from the spec should reduce to the same key" do
+			context do
+				let(:word) { 'CUNsperrICY' }
+				it { should eq(klass.mangle('conspiracy')) }
+			end
+			context do
+				let(:word) { 'inSIDE' }
+				it { should eq(klass.mangle('inside')) }
+			end
+			context do
+				let(:word) { 'jjoobbb' }
+				it { should eq(klass.mangle('job')) }
+			end
+			context do
+				let(:word) { 'weke' }
+				it { should eq(klass.mangle('wake')) }
 			end
 		end
 
 	end
 
-	describe '#generate' do
-		let(:wordlist) { @engine.generate(10) }
-		subject { wordlist }
-
-		its(:length) { should eq(10) }
-
-	end
-
 	describe '.mutate' do
 
-		let(:klass) { @engine.class }
 		subject { klass.mangle(klass.mutate(word)) }
 
 		context "should generate a word that can be mangled to the same as the original" do
@@ -105,7 +97,8 @@ describe Moshi::Engine do
 
 	describe '#load_file' do
 		context "should have loaded a list of words into a new hash" do
-			subject { @engine.dictionary[Moshi::Engine.mangle(word)] }
+
+			subject { engine.dictionary[klass.mangle(word)] }
 
 			context { let(:word) { 'pretty' }; it { should include('pretty') } }
 			context { let(:word) { 'glum' }; it { should include('glum') } }

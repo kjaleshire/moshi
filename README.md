@@ -1,7 +1,7 @@
 Moshi
 ====
 
-For catching and creating all (well, most...) of your misspelled words. Does fuzzy correction and generation based on incorrect vowels or capitalization, or duplicate letters.
+For catching and creating all (well, most...) of your misspelled words. Does fuzzy correction and generation based on incorrect vowels, bad capitalization, or duplicate letters.
 
 Installation and Usage:
 ===
@@ -24,11 +24,12 @@ Loads the dictionary at the path specified. If no path is specified, `/usr/share
 
 	>_
 
-Enter a misspelled word and a suggestion will be printed. If no suggestion can be made or the word is correct, `NO SUGGESTION` will be printed. If the word is already correct, `CORRECT` will be printed
+Enter a misspelled word and a suggestion will be printed. If no suggestion can be made, `NO SUGGESTION` will be printed. If the word is already correct, moshi will reply `CORRECT`.
 
-When `-a` is used, all close suggestions will be listed, not just the best. When `-o` is used, the original word will be printed before its suggestion(s).
+When `-a` is used, all close suggestions will be listed with the best first. 
+When `-o` is used, the original word will be printed before its suggestion(s).
 
-Suggestion will continue until EOF (^d) or interrupt.
+Suggestion will continue until end-of-file (control-D) or interrupt (control-C).
 
 Generation:
 ==
@@ -42,10 +43,25 @@ Additional options:
 ==
 
 	$ moshi -h|--help
-print help summary and exit
+Print help summary and exit
 
 	$ moshi -v|--version
-print version and exit
+Print version and exit
+
+Examples
+===
+
+Load a dictionary at $HOME/custom_dict.txt and start a prompt
+	$ moshi ~/custom_dict.txt
+
+Load the default dictionary and start a prompt. Print the submitted word and the best suggestion, followed by all other possible corrections.
+	$ moshi -o -a
+
+Generate 5 mispelled words and the word they were mutated from:
+	$ moshi -g 5 -o
+
+Generate 10 misspelled words then print them and their suggested correction:
+	$ moshi -g 10 | moshi -o
 
 Enjoy!
 ===

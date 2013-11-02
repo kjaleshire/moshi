@@ -10,7 +10,7 @@ module Moshi
 
 		def initialize(argv=[])
 
-			exit_on_interrupt
+			trap_interrupt
 
 			@opt_parser = build_parser
 			@opt_parser.parse! argv
@@ -20,7 +20,7 @@ module Moshi
 
 		def run
 			if @options[:generate]
-				mutants = @engine.generate @options[:generate], print_original: @options[:print_original]
+				mutants = @engine.generate @options[:generate], @options.slice(:print_original)
 
 				puts mutants
 			else
@@ -30,9 +30,8 @@ module Moshi
 					word = STDIN.gets
 					if word
 						puts word if @options[:original]
-						puts @engine.suggest(word.chomp, print_all: @options[:print_all])
-					else
-						# exit on no input received (end-of-file or ctrl-D)
+						puts @engine.suggest(word.chomp, @options.slice(:print_all))
+					else # on no input received (end-of-file or ctrl-D)
 						exit 0
 					end
 				end
@@ -42,7 +41,7 @@ module Moshi
 
 	private
 
-		def exit_on_interrupt
+		def trap_interrupt
 		  Signal.trap('INT') { exit 0 }
 		end
 
@@ -82,5 +81,12 @@ module Moshi
 			end
 		end
 
+	end
+end
+
+class Hash
+	def slice(*keys)
+		keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
+		keys.each_with_object(self.class.new) { |k, hash| hash[k] = self[k] if has_key?(k) }
 	end
 end

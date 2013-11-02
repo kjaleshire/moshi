@@ -8,18 +8,18 @@ module Moshi
 			@dictionary = load_dictionary(filename)
 		end
 
-		def suggest(misspelling, options={})
-			match_list = @dictionary[Engine.mangle(misspelling)]
+		def suggest(subject, options={})
+			match_list = @dictionary[Engine.mangle(subject)]
 			if match_list.nil?
 				return 'NO SUGGESTION'
-			elsif match_list.include?(misspelling)
+			elsif match_list.include?(subject)
 				return 'CORRECT'
 			else
 				current_best_score, current_best_match = 99, ''
 
 				match_list.each do |match|
-					score = (match.chars - misspelling.chars).length
-					if score < current_best_score && match.length <= misspelling.length
+					score = (match.chars - subject.chars).length
+					if score < current_best_score && match.length <= subject.length
 						current_best_score = score
 						current_best_match = match
 					end
