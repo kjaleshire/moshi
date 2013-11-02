@@ -11,16 +11,22 @@ module Moshi
 		def suggest(word, all)
 			a = @dictionary[mangle(word)]
 			if a.nil?
-				'NO SUGGESTION'
+				return 'NO SUGGESTION'
 			elsif a.include?(word)
-				'CORRECT'
+				return 'CORRECT'
 			elsif all
-				a
+				return a
 			else
-				a = a.dup
-				# we cannot have suggestions longer than the original
-				a.each { |w| a.delete(w) if w.length > word.length }
-				a.min { |a, b| (a.downcase.split(//) - b.downcase.split(//)).length }
+				current_score, current_best = 99, ''
+
+				a.each do |w|
+					score = (w.split(//) - word.split(//)).length
+					if score < current_score && w.length <= word.length
+						current_score = score
+						current_best = w
+					end
+				end
+				return current_best
 			end
 		end
 
@@ -36,7 +42,7 @@ module Moshi
 				mutants << word.dup if original
 				mutants << mutate(word)
 			end
-			mutants
+			return mutants
 		end
 
 		def mutate(word)
@@ -54,7 +60,7 @@ module Moshi
 				end
 				r = rand(1..4)
 			end
-			word
+			return word
 		end
 
 	private
@@ -67,7 +73,7 @@ module Moshi
 					list[key] << line.chomp
 				end
 			end
-			list
+			return list
 		end
 
 		def mut_vowel(word)
@@ -77,7 +83,7 @@ module Moshi
 
 			i = v.sample
 			word[i] = (VOWELS - [word[i]]).sample
-			word
+			return word
 		end
 
 		def mut_dup(word)
@@ -94,7 +100,7 @@ module Moshi
 				when /[A-Z]/
 					word[r] = letter.downcase
 			end
-			word
+			return word
 		end
 
 	end
