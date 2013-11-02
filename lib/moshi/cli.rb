@@ -8,9 +8,9 @@ module Moshi
 		DEFAULT_DICT = '/usr/share/dict/words'
 		PROMPT = '> '
 
-		def initialize argv=[]
-			# CTRL-C
-			Signal.trap("INT") { exit 0 }
+		def initialize(argv=[])
+
+			exit_on_interrupt
 
 			@opt_parser = build_parser
 			@opt_parser.parse! argv
@@ -20,7 +20,7 @@ module Moshi
 
 		def run
 			if @options[:generate]
-				mutants = @engine.generate @options[:generate], @options[:original]
+				mutants = @engine.generate @options[:generate], print_original: @options[:print_original]
 
 				puts mutants
 			else
@@ -30,9 +30,9 @@ module Moshi
 					word = STDIN.gets
 					if word
 						puts word if @options[:original]
-						puts @engine.suggest(word.chomp, @options[:all])
+						puts @engine.suggest(word.chomp, print_all: @options[:print_all])
 					else
-						# EOF
+						# exit on no input received (end-of-file or ctrl-D)
 						exit 0
 					end
 				end
@@ -41,6 +41,10 @@ module Moshi
 		end
 
 	private
+
+		def exit_on_interrupt
+		  Signal.trap('INT') { exit 0 }
+		end
 
 		def build_parser
 			@options = { filename: DEFAULT_DICT }
@@ -59,11 +63,11 @@ module Moshi
 				end
 
 				o.on "-a", "--all", "Print all suggestions, not just the best" do
-					@options[:all] = true
+					@options[:print_all] = true
 				end
 
 				o.on "-o", "--original", "Print the original word before suggestion or generation" do |n|
-					@options[:original] = true
+					@options[:print_original] = true
 				end
 
 				o.on_tail "-h", "--help", "Show help" do

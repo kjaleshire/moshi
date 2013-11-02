@@ -2,55 +2,55 @@ module Moshi
 	class Engine
 		VOWELS = %w(a e i o u A E I O U)
 
-		attr_accessor :dictionary
+		attr_reader :dictionary
 
-		def initialize filename
+		def initialize(filename)
 			@dictionary = load_dictionary(filename)
 		end
 
-		def suggest(word, all)
-			a = @dictionary[mangle(word)]
-			if a.nil?
+		def suggest(misspelling, options={})
+			match_list = @dictionary[Engine.mangle(misspelling)]
+			if match_list.nil?
 				return 'NO SUGGESTION'
-			elsif a.include?(word)
+			elsif match_list.include?(misspelling)
 				return 'CORRECT'
 			else
-				current_score, current_best = 99, ''
+				current_best_score, current_best_match = 99, ''
 
-				a.each do |w|
-					score = (w.split(//) - word.split(//)).length
-					if score < current_score && w.length <= word.length
-						current_score = score
-						current_best = w
+				match_list.each do |match|
+					score = (match.chars - misspelling.chars).length
+					if score < current_best_score && match.length <= misspelling.length
+						current_best_score = score
+						current_best_match = match
 					end
 				end
 
-				unless all
-					return current_best
+				unless options[:print_all]
+					return current_best_match
 				else
-					i = a.index(current_best)
-					a[0], a[i] = a[i], a[0] unless i == 0
-					return a
+					i = match_list.index(current_best_match)
+					match_list[0], match_list[i] = match_list[i], match_list[0] unless i == 0
+					return match_list
 				end
 			end
 		end
 
-		def mangle(word)
+		def generate(count, options={})
+			mutants = []
+			@dictionary.values.flatten.sample(count).each do |word|
+				mutants << word.dup if options[:print_original]
+				mutants << Engine.mutate(word)
+			end
+			return mutants
+		end
+
+		def self.mangle(word)
 			word.downcase
 					.gsub(/([a-z])\1+/) { |s| s[0] }
 					.gsub(/[aeiou]+/, '*')
 		end
 
-		def generate(count, original)
-			mutants = []
-			@dictionary.values.flatten.sample(count).each do |word|
-				mutants << word.dup if original
-				mutants << mutate(word)
-			end
-			return mutants
-		end
-
-		def mutate(word)
+		def self.mutate(word)
 			r = rand(1..3)
 			loop do
 				case r
@@ -73,7 +73,7 @@ module Moshi
 		def load_dictionary(filename, list = {})
 			File.open(filename, 'r') do |file|
 				file.each_line do |line|
-					key = mangle(line.chomp)
+					key = Engine.mangle(line.chomp)
 					list[key] ||= []
 					list[key] << line.chomp
 				end
@@ -81,7 +81,7 @@ module Moshi
 			return list
 		end
 
-		def mutate_vowel(word)
+		def self.mutate_vowel(word)
 			v = []
 
 			word.each_char.with_index { |c, i| v << i if c =~ /[aeiou]/i }
@@ -91,12 +91,12 @@ module Moshi
 			return word
 		end
 
-		def mutate_dup(word)
+		def self.mutate_dup(word)
 			r = rand(1..word.length)
 			word.insert(r, word[r-1])
 		end
 
-		def mutate_case(word)
+		def self.mutate_case(word)
 			r = rand(0...word.length)
 			word[r] = word[r].swapcase
 			return word
