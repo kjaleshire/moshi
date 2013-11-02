@@ -5,7 +5,7 @@ module Moshi
 		attr_accessor :dictionary
 
 		def initialize filename
-			@dictionary = load_file(filename)
+			@dictionary = load_dictionary(filename)
 		end
 
 		def suggest(word, all)
@@ -14,8 +14,6 @@ module Moshi
 				return 'NO SUGGESTION'
 			elsif a.include?(word)
 				return 'CORRECT'
-			elsif all
-				return a
 			else
 				current_score, current_best = 99, ''
 
@@ -26,7 +24,14 @@ module Moshi
 						current_best = w
 					end
 				end
-				return current_best
+
+				unless all
+					return current_best
+				else
+					i = a.index(current_best)
+					a[0], a[i] = a[i], a[0] unless i == 0
+					return a
+				end
 			end
 		end
 
@@ -50,11 +55,11 @@ module Moshi
 			loop do
 				case r
 					when 1
-						word = mut_vowel word
+						word = mutate_vowel word
 					when 2
-						word = mut_dup word
+						word = mutate_dup word
 					when 3
-						word = mut_case word
+						word = mutate_case word
 					when 4
 						break
 				end
@@ -65,7 +70,7 @@ module Moshi
 
 	private
 
-		def load_file(filename, list = {})
+		def load_dictionary(filename, list = {})
 			File.open(filename, 'r') do |file|
 				file.each_line do |line|
 					key = mangle(line.chomp)
@@ -76,7 +81,7 @@ module Moshi
 			return list
 		end
 
-		def mut_vowel(word)
+		def mutate_vowel(word)
 			v = []
 
 			word.each_char.with_index { |c, i| v << i if c =~ /[aeiou]/i }
@@ -86,20 +91,14 @@ module Moshi
 			return word
 		end
 
-		def mut_dup(word)
+		def mutate_dup(word)
 			r = rand(1..word.length)
 			word.insert(r, word[r-1])
 		end
 
-		def mut_case(word)
+		def mutate_case(word)
 			r = rand(0...word.length)
-			letter = word[r]
-			case letter
-				when /[a-z]/
-					word[r] = letter.upcase
-				when /[A-Z]/
-					word[r] = letter.downcase
-			end
+			word[r] = word[r].swapcase
 			return word
 		end
 

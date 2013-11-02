@@ -73,7 +73,7 @@ module Moshi
 
       	o.on_tail "-v", "--version", "Show version" do
 	        puts Moshi::VERSION
-	        exit
+	        exit 1
 	      end
 			end
 		end
