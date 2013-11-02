@@ -1,5 +1,5 @@
 Moshi
-====
+===
 
 For catching and creating all (well, most...) of your misspelled words. Does fuzzy correction and generation based on incorrect vowels, bad capitalization, or duplicate letters.
 
@@ -17,12 +17,12 @@ To build and install into your system gems:
 Moshi has two modes, suggestion and generation, each based off a loaded dictionary you may specify.
 
 Suggestion:
-==
+===
 
-	$ moshi [-o|--original] [-a|--all] [dictionary]
+	$ moshi [-a|--all] [-o|--original] [dictionary]
 Loads the dictionary at the path specified. If no path is specified, `/usr/share/dict/words` is loaded. Once loaded, moshi will present a prompt:
 
-	>_
+	> _
 
 Enter a misspelled word and a suggestion will be printed. If no suggestion can be made, `NO SUGGESTION` will be printed. If the word is already correct, moshi will reply `CORRECT`.
 
@@ -32,15 +32,15 @@ When `-o` is used, the original word will be printed before its suggestion(s).
 Suggestion will continue until end-of-file (control-D) or interrupt (control-C).
 
 Generation:
-==
+===
 
 	$ moshi [-g|--generate N] [-o|--original] [dictionary_path]
-Similar to suggestion in that the dictionary will be automatically loaded or specified. Moshi will select `N` words from the dictionary, mutate and print them.
+Load a dictionary, either default or specified, select `N` words from it, mutate then print them.
 
 When `-o` is used, the original word will be printed before its mutation.
 
 Additional options:
-==
+===
 
 	$ moshi -h|--help
 Print help summary and exit
@@ -51,16 +51,16 @@ Print version and exit
 Examples
 ===
 
-Load a dictionary at $HOME/custom_dict.txt and start a prompt
+Load a dictionary at $HOME/custom_dict.txt and start a prompt: 
 	$ moshi ~/custom_dict.txt
 
-Load the default dictionary and start a prompt. Print the submitted word and the best suggestion, followed by all other possible corrections.
+Load the default dictionary and start a prompt. Print the submitted word and the best suggestion, followed by all other possible corrections. 
 	$ moshi -o -a
 
-Generate 5 mispelled words and the word they were mutated from:
+Generate 5 mispelled words and the word they were mutated from: 
 	$ moshi -g 5 -o
 
-Generate 10 misspelled words then print them and their suggested correction:
+Generate 10 misspelled words then print them and their correction: 
 	$ moshi -g 10 | moshi -o
 
 Enjoy!

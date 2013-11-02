@@ -38,7 +38,7 @@ module Moshi
 		def generate(count, options={})
 			mutants = []
 			@dictionary.values.flatten.sample(count).each do |word|
-				mutants << word.dup if options[:print_original]
+				mutants << word if options[:print_original]
 				mutants << Engine.mutate(word)
 			end
 			return mutants

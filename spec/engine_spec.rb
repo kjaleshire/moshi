@@ -14,6 +14,7 @@ describe Moshi::Engine do
 	it { klass.should respond_to(:mutate)}
 
 	describe '#suggest' do
+
 		subject { engine.suggest('Phoronic') }
 
 		context "should not return words longer than the original" do
@@ -26,10 +27,31 @@ describe Moshi::Engine do
 	end
 
 	describe '#generate' do
-		subject { engine.generate(10) }
+		context "creating an array of mutants" do
+			let(:word_list) { engine.generate(10) }
 
-		its(:length) { should eq(10) }
+			it { word_list.length.should eq(10) }
 
+			it "should generate a word array" do
+				word_list.each { |word| word.should match /\w+/ }
+			end
+		end
+
+		context "creating a mutant array with the original word" do
+			let(:word_list) { engine.generate(8, print_original: true) }
+			let(:dict_array) { engine.dictionary.values.flatten }
+
+			it { word_list.length.should eq(16) }
+
+			it "should contain the original word before the mutation" do
+				word_list.each.with_index do |word, index|
+					word_list.each { |word| word.should match /\w+/ }
+					if index.even?
+						dict_array.should include(word)
+					end
+				end
+			end
+		end
 	end
 
 	describe '.mangle' do
