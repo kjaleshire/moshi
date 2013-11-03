@@ -15,29 +15,13 @@ module Moshi
 			elsif match_list.include?(subject)
 				return 'CORRECT'
 			else
-				current_best_score, current_best_match = 99, ''
-
-				match_list.each do |match|
-					score = (match.chars - subject.chars).length
-					if score < current_best_score && match.length <= subject.length
-						current_best_score = score
-						current_best_match = match
-					end
-				end
-
-				unless options[:print_all]
-					return current_best_match
-				else
-					i = match_list.index(current_best_match)
-					match_list[0], match_list[i] = match_list[i], match_list[0] unless i == 0
-					return match_list
-				end
+				return best_match(match_list, options)
 			end
 		end
 
 		def generate(count, options={})
 			mutants = []
-			@dictionary.values.flatten.sample(count).each do |word|
+			sample(count).each do |word|
 				mutants << word if options[:print_original]
 				mutants << Engine.mutate(word)
 			end
@@ -79,6 +63,33 @@ module Moshi
 				end
 			end
 			return list
+		end
+
+		def swap_best_and_first(match_list, current_best_match)
+			i = match_list.index(current_best_match)
+			match_list[0], match_list[i] = match_list[i], match_list[0] unless i == 0
+		end
+
+		def sample(count)
+			@dictionary.values.flatten.sample(count)
+		end
+
+		def best_match(match_list, options={})
+			current_best_score, current_best_match = 99, ''
+
+			match_list.each do |match|
+				score = (match.chars - subject.chars).length
+				if score < current_best_score && match.length <= subject.length
+					current_best_score = score
+					current_best_match = match
+				end
+			end
+
+			return current_best_match unless options[:print_all]
+
+			swap_best_and_first(match_list, current_best_match)
+			return match_list
+
 		end
 
 		def self.mutate_vowel(word)
