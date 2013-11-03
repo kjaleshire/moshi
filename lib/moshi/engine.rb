@@ -74,9 +74,11 @@ module Moshi
 				end
 			end
 
-			return [best_match, match_list - [best_match]] if options[:print_all]
-
-			return best_match
+			if options[:print_all]
+				[best_match, match_list - [best_match]].flatten
+			else
+				best_match
+			end
 		end
 
 		def self.mutate_vowel(word)
