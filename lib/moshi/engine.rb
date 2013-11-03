@@ -15,13 +15,13 @@ module Moshi
 			elsif match_list.include?(subject)
 				'CORRECT'
 			else
-				get_best_match(match_list, subject, options)
+				get_match(match_list, subject, options)
 			end
 		end
 
 		def generate(count, options={})
 			mutants = []
-			sample_dictionary(count).each do |word|
+			@dictionary.values.flatten.sample(count).each do |word|
 				mutants << word if options[:print_original]
 				mutants << Engine.mutate(word)
 			end
@@ -64,17 +64,7 @@ module Moshi
 			return list
 		end
 
-		def best_match_list(match_list, current_best_match)
-			i = match_list.index(current_best_match)
-			match_list[0], match_list[i] = match_list[i], match_list[0] unless i == 0
-			return match_list
-		end
-
-		def sample_dictionary(count)
-			@dictionary.values.flatten.sample(count)
-		end
-
-		def get_best_match(match_list, subject, options={})
+		def get_match(match_list, subject, options={})
 			par, best_match = 99, ''
 
 			match_list.each do |match|
@@ -84,10 +74,9 @@ module Moshi
 				end
 			end
 
-			return best_match unless options[:print_all]
+			return [best_match, match_list - [best_match]] if options[:print_all]
 
-			return best_match_list(match_list, best_match)
-
+			return best_match
 		end
 
 		def self.mutate_vowel(word)

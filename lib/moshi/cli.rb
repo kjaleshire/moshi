@@ -1,7 +1,7 @@
 require 'moshi/version'
 require 'moshi/engine'
 
-require 'hash/slice'
+require 'moshi/hash/slice'
 
 require 'optparse'
 
@@ -31,7 +31,7 @@ module Moshi
 					print PROMPT
 					word = STDIN.gets
 					if word
-						puts word if @options[:original]
+						puts word if @options[:print_original]
 						puts @engine.suggest(word.chomp, @options.slice(:print_all))
 					else # on no input received (end-of-file or ctrl-D)
 						exit 0
