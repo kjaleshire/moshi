@@ -15,14 +15,29 @@ describe Moshi::Engine do
 
 	describe '#suggest' do
 
-		subject { engine.suggest('Phoronic') }
+		subject { engine.suggest(word) }
 
 		context "should not return words longer than the original" do
+			let(:word) { "Phoronic" }
 			it { should_not eq('Pharaonic') }
+			it { should eq('phoronic') }
 		end
 
-		context "should return the closest matching word" do
-			it { should eq('phoronic') }
+		context do
+			let(:word) { 'CUNsperrICY' }
+			it { should eq('conspiracy') }
+		end
+		context do
+			let(:word) { 'inSIDE' }
+			it { should eq('inside') }
+		end
+		context do
+			let(:word) { 'jjoobbb' }
+			it { should eq('job') }
+		end
+		context do
+			let(:word) { 'weke' }
+			it { should eq('wake') }
 		end
 	end
 
@@ -45,10 +60,8 @@ describe Moshi::Engine do
 
 			it "should contain the original word before the mutation" do
 				word_list.each.with_index do |word, index|
-					word_list.each { |word| word.should match /\w+/ }
-					if index.even?
-						dict_array.should include(word)
-					end
+					word.should match /\w+/
+					dict_array.should include(word) if index.even?
 				end
 			end
 		end
