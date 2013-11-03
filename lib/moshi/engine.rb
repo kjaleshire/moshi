@@ -11,17 +11,17 @@ module Moshi
 		def suggest(subject, options={})
 			match_list = @dictionary[Engine.mangle(subject)]
 			if match_list.nil?
-				return 'NO SUGGESTION'
+				'NO SUGGESTION'
 			elsif match_list.include?(subject)
-				return 'CORRECT'
+				'CORRECT'
 			else
-				return best_match(match_list, options)
+				get_best_match(match_list, subject, options)
 			end
 		end
 
 		def generate(count, options={})
 			mutants = []
-			sample(count).each do |word|
+			sample_dictionary(count).each do |word|
 				mutants << word if options[:print_original]
 				mutants << Engine.mutate(word)
 			end
@@ -35,27 +35,26 @@ module Moshi
 		end
 
 		def self.mutate(word)
-			r = rand(1..3)
+			mutation = nil
 			loop do
-				case r
+				case rand(1..4)
 					when 1
-						word = mutate_vowel word
+						mutation = mutate_vowel(mutation || word)
 					when 2
-						word = mutate_dup word
+						mutation = mutate_dup(mutation || word)
 					when 3
-						word = mutate_case word
+						mutation = mutate_case(mutation || word)
 					when 4
-						break
+						break if mutation
 				end
-				r = rand(1..4)
 			end
-			return word
+			return mutation
 		end
 
 	private
 
-		def load_dictionary(filename, list = {})
-			File.open(filename, 'r') do |file|
+		def load_dictionary(filename, list={})
+			File.open(filename) do |file|
 				file.each_line do |line|
 					key = Engine.mangle(line.chomp)
 					list[key] ||= []
@@ -65,30 +64,29 @@ module Moshi
 			return list
 		end
 
-		def swap_best_and_first(match_list, current_best_match)
+		def best_match_list(match_list, current_best_match)
 			i = match_list.index(current_best_match)
 			match_list[0], match_list[i] = match_list[i], match_list[0] unless i == 0
+			return match_list
 		end
 
-		def sample(count)
+		def sample_dictionary(count)
 			@dictionary.values.flatten.sample(count)
 		end
 
-		def best_match(match_list, options={})
-			current_best_score, current_best_match = 99, ''
+		def get_best_match(match_list, subject, options={})
+			par, best_match = 99, ''
 
 			match_list.each do |match|
 				score = (match.chars - subject.chars).length
-				if score < current_best_score && match.length <= subject.length
-					current_best_score = score
-					current_best_match = match
+				if score < par && match.length <= subject.length
+					par, best_match = score, match
 				end
 			end
 
-			return current_best_match unless options[:print_all]
+			return best_match unless options[:print_all]
 
-			swap_best_and_first(match_list, current_best_match)
-			return match_list
+			return best_match_list(match_list, best_match)
 
 		end
 
@@ -98,13 +96,17 @@ module Moshi
 			word.each_char.with_index { |c, i| v << i if c =~ /[aeiou]/i }
 
 			i = v.sample
-			word[i] = (VOWELS - [word[i]]).sample
-			return word
+			if i
+				word[i] = (VOWELS - [word[i]]).sample
+				return word
+			else
+				return nil
+			end
 		end
 
 		def self.mutate_dup(word)
-			r = rand(1..word.length)
-			word.insert(r, word[r-1])
+			r = rand(0...word.length)
+			word.insert(r+1, word[r])
 		end
 
 		def self.mutate_case(word)
