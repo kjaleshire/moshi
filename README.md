@@ -1,10 +1,8 @@
-Moshi
-===
+#Moshi
 
 For catching and creating all (well, most...) of your misspelled words. Does fuzzy correction and generation based on incorrect vowels, bad capitalization, or duplicate letters.
 
-Installation and Usage:
-===
+##Installation
 
 Moshi is packaged as a gem. To build (but not install):
 
@@ -14,10 +12,11 @@ To build and install into your system gems:
 
 	$ rake install
 
+##Usage
+
 Moshi has two modes, suggestion and generation, each based off a loaded dictionary you may specify.
 
-Suggestion:
-===
+###Suggestion:
 
 	$ moshi [-a|--all] [-o|--original] [-d|--dictionary custom_dictionary]
 Loads the dictionary at the given path. If none is specified, `/usr/share/dict/words` is loaded. Once loaded, moshi will present a prompt:
@@ -31,16 +30,14 @@ When `-o` is used, the original word will be printed before its suggestion(s).
 
 Suggestion will continue until end-of-file (control-D) or interrupt (control-C).
 
-Generation:
-===
+###Generation:
 
 	$ moshi [-g|--generate N] [-o|--original] [-d|--dictionary custom_dictionary]
 Load a dictionary, either default or specified, select `N` words from it, mutate then print them.
 
 When `-o` is used, the original word will be printed before its mutation.
 
-Additional options:
-===
+###Additional options:
 
 	$ moshi -h|--help
 Print help summary and exit
@@ -48,8 +45,7 @@ Print help summary and exit
 	$ moshi -v|--version
 Print version and exit
 
-Examples
-===
+##Examples
 
 Load a dictionary at $HOME/custom_dict.txt and start a prompt:
 
@@ -67,11 +63,10 @@ Generate 10 misspelled words then print them and their correction:
 
 	$ moshi -g 10 | moshi -o
 
-Enjoy!
-===
+##Enjoy!
 
 Moshi is short for moshireru (もうしいれる), 'to propose, to suggest'
 
-Bugs or suggestions, please email me: kjaleshire@gmail.com
+Bugs or suggestions, please email me: kjaleshire@gmail.com, or open an issue on [GitHub](github.com/kjaleshire/moshi).
 
-Copyright (c) 2013 Kyle J Aleshire. All rights Reserved. MIT License.
+Copyright (c) 2013 Kyle J Aleshire. All rights reserved. MIT License.

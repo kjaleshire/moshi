@@ -12,7 +12,7 @@ module Moshi
 
 		def initialize(argv=[])
 
-			trap_interrupt
+			catch_interrupt
 
 			@opt_parser = build_parser
 			@opt_parser.parse! argv
@@ -43,7 +43,7 @@ module Moshi
 
 	private
 
-		def trap_interrupt
+		def catch_interrupt
 		  Signal.trap('INT') { exit 0 }
 		end
 
