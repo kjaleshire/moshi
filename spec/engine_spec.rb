@@ -7,7 +7,8 @@ describe Moshi::Engine do
   let(:klass) { engine.class }
 
   it { engine.should respond_to(:suggest)}
-  it { engine.should respond_to(:generate)}
+  it { engine.should respond_to(:mutate_list)}
+  it { engine.should respond_to(:sample_dictionary) }
   it { engine.should respond_to(:dictionary)}
 
   it { klass.should respond_to(:mangle)}
@@ -41,9 +42,9 @@ describe Moshi::Engine do
     end
   end
 
-  describe '#generate' do
-    context "creating an array of mutants" do
-      let(:word_list) { engine.generate(10) }
+  describe '#sample_dictionary' do
+    context "creating an array of random words" do
+      let(:word_list) { engine.sample_dictionary(10) }
 
       it { word_list.length.should eq(10) }
 
@@ -52,16 +53,19 @@ describe Moshi::Engine do
       end
     end
 
+  end
+
+  describe '#mutate_list' do
     context "creating a mutant array with the original word" do
-      let(:word_list) { engine.generate(8, print_original: true) }
+      let(:mutant_list) { engine.mutate_list(engine.sample_dictionary(8)) }
       let(:dict_array) { engine.dictionary.values.flatten }
 
-      it { word_list.length.should eq(16) }
+      it { mutant_list.length.should eq(8) }
 
       it "should contain the original word before the mutation" do
-        word_list.each.with_index do |word, index|
+        mutant_list.each.with_index do |word, index|
           word.should match /\w+/
-          dict_array.should include(word) if index.even?
+          dict_array.should include(word)
         end
       end
     end

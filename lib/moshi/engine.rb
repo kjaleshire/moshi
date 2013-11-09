@@ -9,23 +9,24 @@ module Moshi
     end
 
     def suggest(subject, options={})
-      match_list = @dictionary[Engine.mangle(subject)]
+      match_list = dictionary[Engine.mangle(subject)]
       if match_list.nil?
         'NO SUGGESTION'
       elsif match_list.include?(subject)
         'CORRECT'
       else
-        get_match(match_list, subject, options)
+        best_match(match_list, subject, options)
       end
     end
 
-    def generate(count, options={})
-      mutants = []
-      @dictionary.values.flatten.sample(count).each do |word|
-        mutants << word if options[:print_original]
+    def sample_dictionary(count)
+      dictionary.values.flatten.sample(count)
+    end
+
+    def mutate_list(word_list)
+      word_list.each_with_object([]) do |word, mutants|
         mutants << Engine.mutate(word)
       end
-      return mutants
     end
 
     def self.mangle(word)
@@ -64,20 +65,20 @@ module Moshi
       return list
     end
 
-    def get_match(match_list, subject, options={})
-      par, best_match = 99, ''
+    def best_match(match_list, subject, options={})
+      par, match = 99, ''
 
-      match_list.each do |match|
-        score = (match.chars - subject.chars).length
-        if score < par && match.length <= subject.length
-          par, best_match = score, match
+      match_list.each do |candidate|
+        score = (candidate.chars - subject.chars).length
+        if score < par && candidate.length <= subject.length
+          par, match = score, candidate
         end
       end
 
       if options[:print_all]
         [best_match, match_list - [best_match]].flatten
       else
-        best_match
+        return match
       end
     end
 

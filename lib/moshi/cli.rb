@@ -19,9 +19,12 @@ module Moshi
     end
 
     def run
-      if @options[:generate]
-        mutants = @engine.generate @options[:generate], @options.slice(:print_original)
+      generate_count = @options[:generate]
+      if generate_count
+        words = @engine.sample_dictionary generate_count
+        mutants = @engine.mutate_list words
 
+        mutants = words.zip(mutants) if @options[:print_original]
         puts mutants
       else
 
