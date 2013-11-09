@@ -8,14 +8,14 @@ module Moshi
       @dictionary = load_dictionary(filename)
     end
 
-    def suggest(subject, options={})
+    def suggest(subject)
       match_list = dictionary[Engine.mangle(subject)]
       if match_list.nil?
         'NO SUGGESTION'
       elsif match_list.include?(subject)
         'CORRECT'
       else
-        best_match(match_list, subject, options)
+        best_match(subject, match_list)
       end
     end
 
@@ -23,16 +23,10 @@ module Moshi
       dictionary.values.flatten.sample(count)
     end
 
-    def mutate_list(word_list)
+    def self.mutate_list(word_list)
       word_list.each_with_object([]) do |word, mutants|
         mutants << Engine.mutate(word)
       end
-    end
-
-    def self.mangle(word)
-      word.downcase
-          .gsub(/([a-z])\1+/) { |s| s[0] }
-          .gsub(/[aeiou]+/, '*')
     end
 
     def self.mutate(word)
@@ -50,6 +44,13 @@ module Moshi
         end
       end
       return mutation
+
+    end
+
+    def self.mangle(word)
+      word.downcase
+          .gsub(/([a-z])\1+/) { |s| s[0] }
+          .gsub(/[aeiou]+/, '*')
     end
 
   private
@@ -65,7 +66,7 @@ module Moshi
       return list
     end
 
-    def best_match(match_list, subject, options={})
+    def best_match(subject, match_list)
       par, match = 99, ''
 
       match_list.each do |candidate|
@@ -75,11 +76,7 @@ module Moshi
         end
       end
 
-      if options[:print_all]
-        [best_match, match_list - [best_match]].flatten
-      else
-        return match
-      end
+      [match, match_list - [match]].flatten
     end
 
     def self.mutate_vowel(word)

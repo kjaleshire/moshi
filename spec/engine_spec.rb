@@ -7,16 +7,16 @@ describe Moshi::Engine do
   let(:klass) { engine.class }
 
   it { engine.should respond_to(:suggest)}
-  it { engine.should respond_to(:mutate_list)}
   it { engine.should respond_to(:sample_dictionary) }
   it { engine.should respond_to(:dictionary)}
 
   it { klass.should respond_to(:mangle)}
+  it { klass.should respond_to(:mutate_list)}
   it { klass.should respond_to(:mutate)}
 
   describe '#suggest' do
 
-    subject { engine.suggest(word) }
+    subject { engine.suggest(word).first }
 
     context "should not return words longer than the original" do
       let(:word) { "Phoronic" }
@@ -55,15 +55,15 @@ describe Moshi::Engine do
 
   end
 
-  describe '#mutate_list' do
+  describe '.mutate_list' do
     context "creating a mutant array with the original word" do
-      let(:mutant_list) { engine.mutate_list(engine.sample_dictionary(8)) }
+      let(:mutant_list) { klass.mutate_list(engine.sample_dictionary(8)) }
       let(:dict_array) { engine.dictionary.values.flatten }
 
       it { mutant_list.length.should eq(8) }
 
       it "should contain the original word before the mutation" do
-        mutant_list.each.with_index do |word, index|
+        mutant_list.each do |word|
           word.should match /\w+/
           dict_array.should include(word)
         end

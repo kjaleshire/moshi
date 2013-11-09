@@ -19,10 +19,11 @@ module Moshi
     end
 
     def run
-      generate_count = @options[:generate]
-      if generate_count
-        words = @engine.sample_dictionary generate_count
-        mutants = @engine.mutate_list words
+      count = @options[:generate]
+
+      if count
+        words = @engine.sample_dictionary(count)
+        mutants = Engine.mutate_list words
 
         mutants = words.zip(mutants) if @options[:print_original]
         puts mutants
@@ -33,9 +34,10 @@ module Moshi
           word = STDIN.gets
           if word
             puts word if @options[:print_original]
-            puts @engine.suggest(word.chomp, @options.slice(:print_all))
-          else # on no input received (end-of-file or ctrl-D)
-            exit 0
+            suggestions = @engine.suggest(word.chomp)
+            puts @options[:print_all] ? suggestions : suggestions.first
+          else
+            no_input
           end
         end
 
@@ -46,6 +48,10 @@ module Moshi
 
     def catch_interrupt
       Signal.trap('INT') { exit 0 }
+    end
+
+    def no_input
+      exit 0
     end
 
     def build_parser
@@ -68,7 +74,7 @@ module Moshi
           @options[:print_all] = true
         end
 
-        o.on "-o", "--original", "Print the original word before suggestion or generation" do |n|
+        o.on "-o", "--original", "Print the original word before suggestion or generation" do
           @options[:print_original] = true
         end
 
@@ -81,13 +87,6 @@ module Moshi
           puts Moshi::VERSION
           exit 1
         end
-      end
-    end
-
-    class ::Hash
-      def slice(*keys)
-        keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
-        keys.each_with_object(self.class.new) { |k, hash| hash[k] = self[k] if has_key?(k) }
       end
     end
 
